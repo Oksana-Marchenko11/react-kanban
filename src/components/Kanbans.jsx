@@ -1,15 +1,15 @@
 import React from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, CardBody } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
 
 export const Kanban = ({ issues }) => {
   console.log(issues);
   const toDoIssues = issues.filter(
-    (issue) => (issue.state === "open") & !issue.assignees.length
+    (issue) => issue.state === "open" && !issue.assignees.length
   );
   const inProgressIssues = issues.filter(
-    (issue) => (issue.state === "open") & (issue.assignees.length > 0)
+    (issue) => issue.state === "open" && issue.assignees.length > 0
   );
   const doneIssues = issues.filter((issue) => issue.state === "closed");
   console.log(toDoIssues);
@@ -22,9 +22,16 @@ export const Kanban = ({ issues }) => {
             <Card.Body>
               <Card.Title>To Do</Card.Title>
               {toDoIssues.length > 0 ? (
-                <Card.Text>
-                  {toDoIssues.map((toDoIssue) => toDoIssue.title)}
-                </Card.Text>
+                toDoIssues.map((toDoIssue) => {
+                  return (
+                    <Card>
+                      <Card.Body>
+                        <Card.Title>{toDoIssue.title}</Card.Title>
+                        <Card.Text>{toDoIssue.title}</Card.Text>
+                      </Card.Body>
+                    </Card>
+                  );
+                })
               ) : (
                 <Card.Text>Немає завдань в To Do</Card.Text>
               )}
@@ -36,9 +43,16 @@ export const Kanban = ({ issues }) => {
             <Card.Body>
               <Card.Title>In Progress</Card.Title>
               {inProgressIssues.length > 0 ? (
-                <Card.Text>
-                  {inProgressIssues.map((progressIssue) => progressIssue.title)}
-                </Card.Text>
+                inProgressIssues.map((inProccesIssue) => {
+                  return (
+                    <Card>
+                      <Card.Body>
+                        <Card.Title>{inProccesIssue.title}</Card.Title>
+                        <Card.Text>{inProccesIssue.title}</Card.Text>
+                      </Card.Body>
+                    </Card>
+                  );
+                })
               ) : (
                 <Card.Text>Немає завдань в In Progress</Card.Text>
               )}
@@ -50,9 +64,16 @@ export const Kanban = ({ issues }) => {
             <Card.Body>
               <Card.Title>Done</Card.Title>
               {doneIssues.length > 0 ? (
-                <Card.Text>
-                  {doneIssues.map((doneIssue) => doneIssue.title)}
-                </Card.Text>
+                doneIssues.map((doneIssues) => {
+                  return (
+                    <Card>
+                      <Card.Body>
+                        <Card.Title>{doneIssues.title}</Card.Title>
+                        <Card.Text>{doneIssues.title}</Card.Text>
+                      </Card.Body>
+                    </Card>
+                  );
+                })
               ) : (
                 <Card.Text>Немає завдань в Done</Card.Text>
               )}

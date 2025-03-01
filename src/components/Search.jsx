@@ -15,7 +15,7 @@ export const Search = () => {
     const token = process.env.GITHUB_TOKEN;
     try {
       const response = await fetch(
-        "https://api.github.com/repos/Oksana-Marchenko11/react-kanban/issues",
+        "https://api.github.com/repos/Oksana-Marchenko11/react-kanban/issues?state=all",
         {
           method: "GET",
           headers: {
