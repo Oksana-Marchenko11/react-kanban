@@ -1,9 +1,11 @@
 import React from "react";
-import { Container, Row, Col, Card, CardBody } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
+import { useSelector } from "react-redux";
 
-export const Kanban = ({ issues }) => {
+export const Kanban = () => {
+  const { issues, loading, error } = useSelector((state) => state.issues);
   console.log(issues);
   const toDoIssues = issues.filter(
     (issue) => issue.state === "open" && !issue.assignees.length
