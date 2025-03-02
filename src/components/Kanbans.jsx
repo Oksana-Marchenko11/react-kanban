@@ -30,9 +30,9 @@ export const Kanban = () => {
             <Card.Body>
               <Card.Title>To Do</Card.Title>
               {toDoIssues.length > 0 ? (
-                toDoIssues.map((toDoIssue) => {
+                toDoIssues.map((toDoIssue, index) => {
                   return (
-                    <Card>
+                    <Card key={index}>
                       <Card.Body>
                         <Card.Title>{toDoIssue.title}</Card.Title>
                         <Card.Text>{toDoIssue.title}</Card.Text>
@@ -57,9 +57,9 @@ export const Kanban = () => {
             <Card.Body>
               <Card.Title>In Progress</Card.Title>
               {inProgressIssues.length > 0 ? (
-                inProgressIssues.map((inProccesIssue) => {
+                inProgressIssues.map((inProccesIssue, index) => {
                   return (
-                    <Card>
+                    <Card key={index}>
                       <Card.Body>
                         <Card.Title>{inProccesIssue.title}</Card.Title>
                         <Card.Text>{inProccesIssue.title}</Card.Text>
@@ -84,9 +84,9 @@ export const Kanban = () => {
             <Card.Body>
               <Card.Title>Done</Card.Title>
               {doneIssues.length > 0 ? (
-                doneIssues.map((doneIssues) => {
+                doneIssues.map((doneIssues, index) => {
                   return (
-                    <Card>
+                    <Card key={index}>
                       <Card.Body>
                         <Card.Title>{doneIssues.title}</Card.Title>
                         <Card.Text>{doneIssues.title}</Card.Text>
