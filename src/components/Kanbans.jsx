@@ -20,7 +20,13 @@ export const Kanban = () => {
     <Container fluid>
       <Row className="g-12">
         <Col xs={12} sm={4} md={4}>
-          <Card style={{ height: "700px", backgroundColor: "#b3b1b1" }}>
+          <Card
+            style={{
+              height: "700px",
+              overflowY: "scroll",
+              backgroundColor: "#b3b1b1",
+            }}
+          >
             <Card.Body>
               <Card.Title>To Do</Card.Title>
               {toDoIssues.length > 0 ? (
@@ -41,7 +47,13 @@ export const Kanban = () => {
           </Card>
         </Col>
         <Col xs={12} sm={4} md={4}>
-          <Card style={{ height: "700px", backgroundColor: "#b3b1b1" }}>
+          <Card
+            style={{
+              height: "700px",
+              overflowY: "scroll",
+              backgroundColor: "#b3b1b1",
+            }}
+          >
             <Card.Body>
               <Card.Title>In Progress</Card.Title>
               {inProgressIssues.length > 0 ? (
@@ -62,7 +74,13 @@ export const Kanban = () => {
           </Card>
         </Col>
         <Col xs={12} sm={4} md={4}>
-          <Card style={{ height: "700px", backgroundColor: "#b3b1b1" }}>
+          <Card
+            style={{
+              height: "700px",
+              overflowY: "scroll",
+              backgroundColor: "#b3b1b1",
+            }}
+          >
             <Card.Body>
               <Card.Title>Done</Card.Title>
               {doneIssues.length > 0 ? (

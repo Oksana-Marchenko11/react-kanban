@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Form, Button, Col, Row } from "react-bootstrap";
-import Kanban from "./Kanbans";
 import { useDispatch } from "react-redux";
 import {
   fetchIssuesStart,
@@ -10,7 +9,6 @@ import {
 
 export const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [issues, setIssues] = useState([]);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -31,8 +29,6 @@ export const Search = () => {
       if (!response.ok) throw new Error(`Error: ${response.status}`);
       const data = await response.json();
       dispatch(fetchIssuesSuccess(data));
-      console.log(data);
-      setIssues(data);
     } catch (error) {
       dispatch(fetchIssuesFailure(error.message));
       console.error("Failed to fetch current project IDs:", error);
@@ -59,7 +55,6 @@ export const Search = () => {
           </Col>
         </Row>
       </Form>
-      <Kanban issues={issues} />
     </>
   );
 };
