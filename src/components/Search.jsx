@@ -9,7 +9,8 @@ import {
 import { currentsearchQuery } from "../redux/searchQuery/searchQuerySlice";
 
 export const Search = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState({});
+  const [url, setUrl] = useState("");
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -19,19 +20,21 @@ export const Search = () => {
       const match = url.match(regex);
       if (match) {
         return {
-          user: match[1], // Логін користувача
-          repo: match[2], // Репозиторій
+          user: match[1],
+          repo: match[2],
         };
       } else {
         console.log("Invalid GitHub URL");
         return null;
       }
     }
-    const searchUrl = receiveUrlData(searchString);
+    const searchIssueUrl = receiveUrlData(searchString);
+    setSearchQuery(searchIssueUrl);
     function createApiUrl(user, repo) {
       return `https://api.github.com/repos/${user}/${repo}/issues?state=all`;
     }
-    setSearchQuery(createApiUrl(searchUrl.user, searchUrl.repo));
+    const url = createApiUrl(searchIssueUrl.user, searchIssueUrl.repo);
+    setUrl(url);
   };
   console.log(searchQuery);
   const handleSubmit = async (e) => {
@@ -39,7 +42,7 @@ export const Search = () => {
     const token = process.env.GITHUB_TOKEN;
     dispatch(fetchIssuesStart());
     try {
-      const response = await fetch(searchQuery, {
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           Authorization: token,
