@@ -6,15 +6,34 @@ import {
   fetchIssuesSuccess,
   fetchIssuesFailure,
 } from "../redux/issues/issuesSlice";
+import { currentsearchQuery } from "../redux/searchQuery/searchQuerySlice";
 
 export const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
-    setSearchQuery(e.target.value);
+    const searchString = e.target.value;
+    function receiveUrlData(url) {
+      const regex = /^https:\/\/github\.com\/([^\/]+)\/([^\/?]+)/;
+      const match = url.match(regex);
+      if (match) {
+        return {
+          user: match[1], // Логін користувача
+          repo: match[2], // Репозиторій
+        };
+      } else {
+        console.log("Invalid GitHub URL");
+        return null;
+      }
+    }
+    const searchUrl = receiveUrlData(searchString);
+    function createApiUrl(user, repo) {
+      return `https://api.github.com/repos/${user}/${repo}/issues?state=all`;
+    }
+    setSearchQuery(createApiUrl(searchUrl.user, searchUrl.repo));
   };
-
+  console.log(searchQuery);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = process.env.GITHUB_TOKEN;
@@ -29,11 +48,11 @@ export const Search = () => {
       if (!response.ok) throw new Error(`Error: ${response.status}`);
       const data = await response.json();
       dispatch(fetchIssuesSuccess(data));
+      dispatch(currentsearchQuery(searchQuery));
     } catch (error) {
       dispatch(fetchIssuesFailure(error.message));
       console.error("Failed to fetch current project IDs:", error);
     }
-    console.log("hi");
   };
 
   return (
@@ -44,7 +63,6 @@ export const Search = () => {
             <Form.Control
               type="search"
               placeholder="Enter Repo URL"
-              value={searchQuery}
               onChange={handleChange}
             />
           </Col>

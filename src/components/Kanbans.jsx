@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 
 export const Kanban = () => {
   const { issues, loading, error } = useSelector((state) => state.issues);
-  console.log(issues);
   const toDoIssues = issues.filter(
     (issue) => issue.state === "open" && !issue.assignees.length
   );
@@ -14,8 +13,6 @@ export const Kanban = () => {
     (issue) => issue.state === "open" && issue.assignees.length > 0
   );
   const doneIssues = issues.filter((issue) => issue.state === "closed");
-  console.log(toDoIssues);
-  console.log(doneIssues);
   return (
     <Container fluid>
       <Row className="g-12">
