@@ -5,7 +5,7 @@ import "../App.css";
 import { useSelector } from "react-redux";
 
 export const Kanban = () => {
-  const { issues, loading, error } = useSelector((state) => state.issues);
+  const { issues } = useSelector((state) => state.issues);
   const toDoIssues = issues.filter(
     (issue) => issue.state === "open" && !issue.assignees.length
   );

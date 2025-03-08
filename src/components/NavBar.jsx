@@ -5,6 +5,9 @@ import { useSelector } from "react-redux";
 export const Navbar = () => {
   const data = useSelector((state) => state.searchQuery.searchQuery);
   console.log(data);
+  if (!data || !data.owner || !data.owner.login || !data.name) {
+    return null;
+  }
   const userLink = `https://github.com/${data.owner.login}/`;
   const repoLink = `https://github.com/${data.owner.login}/${data.name}/`;
   return (
