@@ -2,6 +2,7 @@
   "name": "react-kanban",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://oksana-marchenko11.github.io/react-kanban/",
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.0",
     "@testing-library/dom": "^10.4.0",
