@@ -10,11 +10,7 @@ const initialState = {
 const searchQuerySlice = createSlice({
   name: "searchQuery",
   initialState,
-  // reducers: {
-  //   getRepository: (state, action) => {
-  //     state.searchQuery = action.payload;
-  //   },
-  // },
+
   extraReducers: (builder) => {
     builder
       .addCase(getRepo.pending, (state) => {
@@ -30,6 +26,4 @@ const searchQuerySlice = createSlice({
       });
   },
 });
-
-// export const { getRepository } = searchQuerySlice.actions;
 export default searchQuerySlice.reducer;

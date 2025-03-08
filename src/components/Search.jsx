@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { Form, Button, Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import {
-  fetchIssuesStart,
-  fetchIssuesSuccess,
-  fetchIssuesFailure,
-} from "../redux/issues/issuesSlice";
 import { getRepo } from "../helpers/githubApi";
+import { getIssues } from "../helpers/githubApi";
 
 export const Search = () => {
   const [searchQuery, setSearchQuery] = useState({});
@@ -28,7 +24,6 @@ export const Search = () => {
         return null;
       }
     }
-
     const urlData = receiveUrlData(searchString);
     if (urlData) {
       setSearchQuery(urlData);
@@ -37,32 +32,8 @@ export const Search = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!searchQuery.user || !searchQuery.repo) {
-      console.error("Invalid repository URL");
-      return;
-    }
-
-    const token = process.env.GITHUB_TOKEN;
-    dispatch(fetchIssuesStart());
-
-    const url = `https://api.github.com/repos/${searchQuery.user}/${searchQuery.repo}/issues?state=all`;
-
-    try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: { token },
-        },
-      });
-
-      if (!response.ok) throw new Error(`Error: ${response.status}`);
-      const data = await response.json();
-      dispatch(fetchIssuesSuccess(data));
-      dispatch(getRepo(searchQuery));
-    } catch (error) {
-      dispatch(fetchIssuesFailure(error.message));
-    }
+    dispatch(getIssues(searchQuery));
+    dispatch(getRepo(searchQuery));
   };
 
   return (
