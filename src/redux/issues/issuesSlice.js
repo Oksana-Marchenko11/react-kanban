@@ -23,6 +23,20 @@ const issuesSlice = createSlice({
       state.error = action.payload;
     },
   },
+  // extraReducers: (builder) => {
+  //   builder
+  //     .addCase(fetchContacts.pending, (state) => {
+  //       state.contacts.isLoading = true;
+  //     })
+  //     .addCase(fetchContacts.fulfilled, (state, action) => {
+  //       state.contacts.isLoading = false;
+  //       state.contacts.items = action.payload;
+  //     })
+  //     .addCase(fetchContacts.rejected, (state, action) => {
+  //       state.contacts.isLoading = false;
+  //       state.contacts.error = action.payload;
+  //     });
+  // },
 });
 
 export const { fetchIssuesStart, fetchIssuesSuccess, fetchIssuesFailure } =

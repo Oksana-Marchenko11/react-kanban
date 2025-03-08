@@ -1,31 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { authInstance } from "redux/auth/operations";
-
 const apiUrl = "https://api.github.com";
 
-//TODO: collect all needed git endpoints
-
+//https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository
 export const getRepo = createAsyncThunk(
-  //https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository
-
-  async (login, repo) => {
-    const endpoint = `${apiUrl}/repos/${login}/${repo}/`;
+  "issues/getRepo",
+  async (url, thunkAPI) => {
+    const endpoint = `${apiUrl}/repos/${url.user}/${url.repo}`;
     try {
-      const { data } = await authInstance.get(endpoint);
+      const response = await fetch(endpoint);
+      if (!response.ok) throw new Error("Failed to fetch");
+      const data = await response.json();
       return data;
-    } catch (e) {
-      return e.message;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
-  } /*
-  returned object {
-  ...
-  "forks_count": 9,
-  "forks": 9,
-  "stargazers_count": 80, // repo stars 
-  "watchers_count": 80,
-  "watchers": 80,
-  "size": 108,
-  ...
   }
-  */
 );

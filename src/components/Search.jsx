@@ -6,15 +6,15 @@ import {
   fetchIssuesSuccess,
   fetchIssuesFailure,
 } from "../redux/issues/issuesSlice";
-import { currentsearchQuery } from "../redux/searchQuery/searchQuerySlice";
+import { getRepo } from "../helpers/githubApi";
 
 export const Search = () => {
   const [searchQuery, setSearchQuery] = useState({});
-  const [url, setUrl] = useState("");
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const searchString = e.target.value;
+
     function receiveUrlData(url) {
       const regex = /^https:\/\/github\.com\/([^\/]+)\/([^\/?]+)/;
       const match = url.match(regex);
@@ -28,55 +28,60 @@ export const Search = () => {
         return null;
       }
     }
-    const searchIssueUrl = receiveUrlData(searchString);
-    setSearchQuery(searchIssueUrl);
-    function createApiUrl(user, repo) {
-      return `https://api.github.com/repos/${user}/${repo}/issues?state=all`;
+
+    const urlData = receiveUrlData(searchString);
+    if (urlData) {
+      setSearchQuery(urlData);
     }
-    const url = createApiUrl(searchIssueUrl.user, searchIssueUrl.repo);
-    setUrl(url);
   };
-  console.log(searchQuery);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!searchQuery.user || !searchQuery.repo) {
+      console.error("Invalid repository URL");
+      return;
+    }
+
     const token = process.env.GITHUB_TOKEN;
     dispatch(fetchIssuesStart());
+
+    const url = `https://api.github.com/repos/${searchQuery.user}/${searchQuery.repo}/issues?state=all`;
+
     try {
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: token,
+          Authorization: { token },
         },
       });
+
       if (!response.ok) throw new Error(`Error: ${response.status}`);
       const data = await response.json();
       dispatch(fetchIssuesSuccess(data));
-      dispatch(currentsearchQuery(searchQuery));
+      dispatch(getRepo(searchQuery));
     } catch (error) {
       dispatch(fetchIssuesFailure(error.message));
-      console.error("Failed to fetch current project IDs:", error);
     }
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <Row>
-          <Col xs={12} sm={9} md={9}>
-            <Form.Control
-              type="search"
-              placeholder="Enter Repo URL"
-              onChange={handleChange}
-            />
-          </Col>
-          <Col xs={12} sm={3} md={3}>
-            <Button type="submit" variant="outline-success">
-              Load issues
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-    </>
+    <Form onSubmit={handleSubmit}>
+      <Row>
+        <Col xs={12} sm={9} md={9}>
+          <Form.Control
+            type="search"
+            placeholder="Enter Repo URL"
+            onChange={handleChange}
+          />
+        </Col>
+        <Col xs={12} sm={3} md={3}>
+          <Button type="submit" variant="outline-success">
+            Load issues
+          </Button>
+        </Col>
+      </Row>
+    </Form>
   );
 };
 

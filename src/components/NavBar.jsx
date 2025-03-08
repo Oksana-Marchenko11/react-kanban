@@ -4,21 +4,19 @@ import { useSelector } from "react-redux";
 
 export const Navbar = () => {
   const data = useSelector((state) => state.searchQuery.searchQuery);
-  const userName = data.user;
-  const repoName = data.repo;
-
-  const userLink = `https://github.com/${userName}/`;
-  const repoLink = `https://github.com/${userName}/${repoName}/`;
+  console.log(data);
+  const userLink = `https://github.com/${data.owner.login}/`;
+  const repoLink = `https://github.com/${data.owner.login}/${data.name}/`;
   return (
     <Nav>
       <ListGroup horizontal>
         <ListGroupItem>
-          <NavLink href={userLink}>{userName}</NavLink>
+          <NavLink href={userLink}>{data.owner.login}</NavLink>
         </ListGroupItem>
         <ListGroupItem>
-          <NavLink href={repoLink}>{repoName}</NavLink>
+          <NavLink href={repoLink}>{data.name}</NavLink>
         </ListGroupItem>
-        <ListGroupItem>STARS</ListGroupItem>
+        <ListGroupItem>{data.stargazers_count}</ListGroupItem>
       </ListGroup>
     </Nav>
   );
