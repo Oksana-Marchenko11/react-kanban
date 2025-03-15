@@ -10,7 +10,11 @@ const initialState = {
 const issuesSlice = createSlice({
   name: "issues",
   initialState,
-
+  reducers: {
+    updateIssueBasket: (state, action) => {
+      state.issues = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getIssues.pending, (state) => {
@@ -27,4 +31,5 @@ const issuesSlice = createSlice({
   },
 });
 
+export const { updateIssueBasket } = issuesSlice.actions;
 export default issuesSlice.reducer;
