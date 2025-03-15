@@ -26,18 +26,16 @@ export const getIssues = createAsyncThunk(
       const response = await fetch(endpoint);
       if (!response.ok) throw new Error("Failed to fetch");
       const data = await response.json();
-      const updateData = data.map((item) => {
-        if (item.state === "closed") {
-          item.__basket = "closed";
-        } else if (item.state === "open" && item.assignees.length > 0) {
-          item.__basket = "in-progress";
-        } else {
-          item.__basket = "open";
-        }
-        return item;
-      });
-      console.log(updateData);
-      return updateData;
+      const issuesWithBasket = data.map((issue) => ({
+        ...issue,
+        _basket:
+          issue.state === "closed"
+            ? "done"
+            : issue.assignees.length > 0
+            ? "in-progress"
+            : "todo",
+      }));
+      return issuesWithBasket;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
