@@ -14,6 +14,33 @@ const issuesSlice = createSlice({
     updateIssueBasket: (state, action) => {
       state.issues = action.payload;
     },
+    updateIssueOrder: (state, action) => {
+      const { dragIndex, hoverIndex, basket } = action.payload;
+      const newIssues = [...state.issues];
+
+      // Знаходимо індекси задач у загальному масиві для конкретної колонки
+      const basketIssues = newIssues.filter(
+        (issue) => issue._basket === basket
+      );
+      const draggedIssue = basketIssues[dragIndex];
+
+      // Видаляємо задачу з поточної позиції
+      const draggedIssueIndex = newIssues.findIndex(
+        (issue) => issue.id === draggedIssue.id
+      );
+      newIssues.splice(draggedIssueIndex, 1);
+
+      // Знаходимо нову позицію для вставки
+      const targetIssue = basketIssues[hoverIndex];
+      const targetIssueIndex = newIssues.findIndex(
+        (issue) => issue.id === targetIssue.id
+      );
+
+      // Вставляємо задачу на нову позицію
+      newIssues.splice(targetIssueIndex, 0, draggedIssue);
+
+      state.issues = newIssues;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -31,5 +58,5 @@ const issuesSlice = createSlice({
   },
 });
 
-export const { updateIssueBasket } = issuesSlice.actions;
+export const { updateIssueBasket, updateIssueOrder } = issuesSlice.actions;
 export default issuesSlice.reducer;
