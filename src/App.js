@@ -6,7 +6,7 @@ import Kanban from "./components/Kanbans.jsx";
 
 function App() {
   return (
-    <div>
+    <div style={{ backgroundColor: "#09325c", minHeight: "100vh" }}>
       <Search />
       <Navbar />
       <Kanban />

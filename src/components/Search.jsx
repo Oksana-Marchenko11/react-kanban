@@ -37,17 +37,18 @@ export const Search = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} className="py-4 px-4">
       <Row>
         <Col xs={12} sm={9} md={9}>
           <Form.Control
             type="search"
             placeholder="Enter Repo URL"
             onChange={handleChange}
+            className="form_control"
           />
         </Col>
         <Col xs={12} sm={3} md={3}>
-          <Button type="submit" variant="outline-success">
+          <Button type="submit" className="gradient-btn">
             Load issues
           </Button>
         </Col>

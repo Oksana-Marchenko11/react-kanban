@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../App.css";
 import { useSelector, useDispatch } from "react-redux";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -15,92 +14,86 @@ const ItemTypes = {
   ISSUE: "issue",
 };
 
-const DraggableIssue = ({ issue, index, moveIssue, basket }) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.ISSUE,
-    item: {
-      id: issue.id,
-      index,
-      state: issue.state,
-      assignees: issue.assignees,
-      _basket: issue._basket,
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const [, drop] = useDrop({
-    accept: ItemTypes.ISSUE,
-    hover: (draggedItem) => {
-      if (draggedItem.index === index) {
-        return;
-      }
-      moveIssue(draggedItem.index, index, basket);
-      draggedItem.index = index;
-      console.log(index);
-    },
-  });
-
-  return (
-    <div
-      ref={(node) => drag(drop(node))}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-    >
-      <Card>
-        <Card.Body>
-          <Card.Title>{issue.title}</Card.Title>
-          <Card.Text>{issue.title}</Card.Text>
-        </Card.Body>
-      </Card>
-    </div>
-  );
-};
-
-const DroppableColumn = ({ title, issues, onDrop, moveIssue, basket }) => {
-  const [{ isOver }, drop] = useDrop({
-    accept: ItemTypes.ISSUE,
-    drop: (item, monitor) => {
-      console.log(issues);
-      console.log(item);
-      onDrop(item, title);
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  });
-  return (
-    <Card
-      ref={drop}
-      style={{
-        height: "700px",
-        overflowY: "scroll",
-        backgroundColor: isOver ? "#d3d3d3" : "#b3b1b1",
-      }}
-    >
-      <Card.Body>
-        <Card.Title>{title}</Card.Title>
-        {issues.length > 0 ? (
-          issues.map((issue, index) => (
-            <DraggableIssue
-              key={issue.id}
-              issue={issue}
-              index={index}
-              moveIssue={moveIssue}
-              basket={basket}
-            />
-          ))
-        ) : (
-          <Card.Text>Немає завдань в {title}</Card.Text>
-        )}
-      </Card.Body>
-    </Card>
-  );
-};
-
 export const Kanban = () => {
   const dispatch = useDispatch();
   const { issues } = useSelector((state) => state.issues);
+
+  const DraggableIssue = ({ issue, index, basket }) => {
+    console.log(basket);
+    const [{ isDragging }, drag] = useDrag({
+      type: ItemTypes.ISSUE,
+      item: {
+        id: issue.id,
+        index,
+        state: issue.state,
+        title: issue.title,
+        _basket: issue._basket,
+      },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+    });
+
+    const [{ isOver }, drop] = useDrop({
+      accept: ItemTypes.ISSUE,
+      hover: (draggedItem) => {
+        if (draggedItem.index === index) return; // нічого не міняємо
+
+        moveIssue(draggedItem.index, index, basket);
+        draggedItem.index = index; // оновлюємо індекс перетягуваного елемента
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+      }),
+    });
+    return (
+      <Card
+        ref={(node) => drag(drop(node))}
+        style={{
+          opacity: isDragging ? 0.9 : 1,
+          backgroundColor: isOver ? "red" : "white",
+          padding: "20px",
+        }}
+        className="mb-3"
+      >
+        <Card.Body>
+          <Card.Title className="text_title">{issue.title}</Card.Title>
+          <Card.Text className="text">{issue.title}</Card.Text>
+        </Card.Body>
+      </Card>
+    );
+  };
+
+  const DroppableColumn = ({ title, issues, onDrop, basket }) => {
+    const [_, drop] = useDrop({
+      accept: ItemTypes.ISSUE,
+      drop: (item, monitor) => {
+        // console.log(issues);
+        // console.log(item);
+        onDrop(item, title);
+      },
+       });
+    return (
+      <Card ref={drop}>
+        <Card.Body className="my-custom-card">
+          <Card.Title>{title}</Card.Title>
+          {issues.length > 0 ? (
+            issues.map((issue, index) => (
+              <DraggableIssue
+                issues={issues}
+                issue={issue}
+                key={issue.id}
+                index={index}
+                basket={basket}
+              />
+            ))
+          ) : (
+            <Card.Text>Немає завдань в {title}</Card.Text>
+          )}
+        </Card.Body>
+      </Card>
+    );
+  };
 
   const handleDrop = (item, column) => {
     const basketMap = {
@@ -128,8 +121,8 @@ export const Kanban = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <Container fluid>
-        <Row className="g-12">
+      <Container fluid className="px-4">
+        <Row className="g-4">
           <Col xs={12} sm={4} md={4}>
             <DroppableColumn
               title="To Do"

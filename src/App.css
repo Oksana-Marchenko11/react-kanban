@@ -1,39 +1,38 @@
-.App {
-  text-align: center;
+.my-custom-card {
+  background-image: linear-gradient(to bottom right, rgb(58, 138, 219), rgb(195, 219, 243));
+  color: black;
+  border: none;
+  height: 700px;
+  overflow-y: scroll;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.gradient-btn {
+  background-image: linear-gradient(to bottom right,
+      rgb(58, 138, 219),
+      rgb(195, 219, 243));
+  border: none;
+  max-width: 260px;
+  font-weight: 500 !important;
+  font-family: Verdana, Geneva, Tahoma, sans-serif !important;
+  font-size: 18px !important;
+  padding: 8px;
+  border-radius: 4px;
+  transition: 0.3s;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.text {
+  color: #09325c !important;
+  font-family: Verdana, Geneva, Tahoma, sans-serif !important;
+  font-size: 18px !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.text_title {
+  color: #09325c !important;
+  font-weight: 700 !important;
+  font-family: Verdana, Geneva, Tahoma, sans-serif !important;
+  font-size: 18px !important;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+.form_control {
+  height: 68px;
 }

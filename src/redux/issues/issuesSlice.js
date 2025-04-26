@@ -18,26 +18,33 @@ const issuesSlice = createSlice({
       const { dragIndex, hoverIndex, basket } = action.payload;
       const newIssues = [...state.issues];
 
-      // Знаходимо індекси задач у загальному масиві для конкретної колонки
       const basketIssues = newIssues.filter(
         (issue) => issue._basket === basket
       );
+
+      if (
+        dragIndex === hoverIndex ||
+        dragIndex >= basketIssues.length ||
+        hoverIndex >= basketIssues.length
+      ) {
+        return;
+      }
+
       const draggedIssue = basketIssues[dragIndex];
 
-      // Видаляємо задачу з поточної позиції
       const draggedIssueIndex = newIssues.findIndex(
         (issue) => issue.id === draggedIssue.id
       );
       newIssues.splice(draggedIssueIndex, 1);
-
-      // Знаходимо нову позицію для вставки
-      const targetIssue = basketIssues[hoverIndex];
-      const targetIssueIndex = newIssues.findIndex(
-        (issue) => issue.id === targetIssue.id
+      const basketIssuesAfterRemoval = newIssues.filter(
+        (issue) => issue._basket === basket
       );
 
-      // Вставляємо задачу на нову позицію
-      newIssues.splice(targetIssueIndex, 0, draggedIssue);
+      const targetIssue = basketIssuesAfterRemoval[hoverIndex];
+      const targetIndex = targetIssue
+        ? newIssues.findIndex((issue) => issue.id === targetIssue.id)
+        : newIssues.length;
+      newIssues.splice(targetIndex, 0, draggedIssue);
 
       state.issues = newIssues;
     },
