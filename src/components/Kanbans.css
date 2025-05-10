@@ -1,0 +1,40 @@
+.drop-placeholder {
+  position: absolute;
+  border: 0;
+  background-color: transparent;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.drop-placeholder-line {
+  height: 100%;
+  width: 100%;
+  background-color: #0078ff;
+  border-radius: 3px;
+}
+
+.column-drop-preview {
+  transition: all 0.3s ease;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, .125);
+  min-height: 200px;
+  position: relative;
+}
+
+.column-drop-preview-active {
+  background-color: #ebf5ff;
+  box-shadow: 0 0 8px rgba(0, 120, 255, 0.3);
+  border: 2px dashed #0078ff;
+}
+
+.empty-column-drop-placeholder {
+  padding: 20px;
+  margin: 10px 0;
+  border: 2px dashed #0078ff;
+  border-radius: 5px;
+  background-color: #f0f8ff;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

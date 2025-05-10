@@ -1,0 +1,35 @@
+.kanban-column {
+  transition: all 0.2s ease;
+  height: 100%;
+  min-height: 500px;
+}
+
+.kanban-column-drop {
+  background-color: #f0f9ff;
+  box-shadow: 0 0 5px rgba(0, 100, 255, 0.5);
+}
+
+.kanban-column-title {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-bottom: 1px solid #dee2e6;
+  font-weight: bold;
+}
+
+.empty-column-placeholder {
+  text-align: center;
+  padding: 20px;
+  color: #aaa;
+  border: 2px dashed #ddd;
+  border-radius: 5px;
+  margin-top: 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-column-drop-hover {
+  background-color: #f0f8ff;
+  border: 2px dashed #007bff;
+}

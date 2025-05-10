@@ -1,0 +1,50 @@
+# Top-most EditorConfig file
+root = true
+
+# JavaScript files
+[src/**/*.js]
+charset = utf-8
+end_of_line = lf
+max_line_length = off
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[src/**/*.jsx]
+charset = utf-8
+end_of_line = lf
+max_line_length = off
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[src/**/*.css]
+charset = utf-8
+end_of_line = lf
+max_line_length = off
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[src/**/*.html]
+charset = utf-8
+end_of_line = lf
+max_line_length = off
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[src/**/*.json]
+charset = utf-8
+end_of_line = lf
+max_line_length = off
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+

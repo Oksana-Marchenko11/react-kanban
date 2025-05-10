@@ -3,6 +3,7 @@ import { Form, Button, Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { getRepo } from "../helpers/githubApi";
 import { getIssues } from "../helpers/githubApi";
+import "./Search.css";
 
 export const Search = () => {
   const [searchQuery, setSearchQuery] = useState({});
@@ -12,7 +13,7 @@ export const Search = () => {
     const searchString = e.target.value;
 
     function receiveUrlData(url) {
-      const regex = /^https:\/\/github\.com\/([^\/]+)\/([^\/?]+)/;
+      const regex = /^https:\/\/github\.com\/([^/]+)\/([^/?]+)/;
       const match = url.match(regex);
       if (match) {
         return {
@@ -37,17 +38,16 @@ export const Search = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="py-4 px-4">
-      <Row>
+    <Form onSubmit={handleSubmit} className="search-form">
+      <Row className="row-spacing">
         <Col xs={12} sm={9} md={9}>
           <Form.Control
             type="search"
             placeholder="Enter Repo URL"
             onChange={handleChange}
-            className="form_control"
           />
         </Col>
-        <Col xs={12} sm={3} md={3}>
+        <Col xs={12} sm={3} md={3} className="button-col">
           <Button type="submit" className="gradient-btn">
             Load issues
           </Button>
