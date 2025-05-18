@@ -21,6 +21,9 @@ const issuesSlice = createSlice({
         state.issues = action.payload.issues;
       }
     },
+    // updateIssuesSlice: (state, action) => {
+    //   state.issues = action.payload;
+    // },
   },
   extraReducers: (builder) => {
     builder
@@ -39,5 +42,5 @@ const issuesSlice = createSlice({
   },
 });
 
-export const { updateColumns } = issuesSlice.actions;
+export const { updateColumns, updateIssuesSlice } = issuesSlice.actions;
 export default issuesSlice.reducer;

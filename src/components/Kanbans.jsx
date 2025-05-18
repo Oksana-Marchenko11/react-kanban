@@ -5,8 +5,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useDrag, useDrop } from "react-dnd";
-import { updateColumns } from "../redux/issues/issuesSlice";
+import { updateColumns, updateIssuesSlice } from "../redux/issues/issuesSlice";
 import "./Kanbans.css";
+import { hover } from "@testing-library/user-event/dist/hover";
 
 const ItemTypes = {
   ISSUE: "issue",
@@ -41,8 +42,13 @@ export const Kanban = () => {
     issues: state.issues.issues,
     columns: state.issues.columns,
   }));
-  console.log(issues);
-  console.log(columns);
+  // console.log(issues);
+  // console.log(columns);
+
+  const placeholder = {
+    title: "You are trying to put task here",
+    id: "placeholder",
+  };
 
   // тут ід усіх тасок в колонці
   const toDoIssues = columns.toDoIssues || [];
@@ -98,8 +104,8 @@ export const Kanban = () => {
 
       dispatch(
         updateColumns({
-          issues: clonedIssues,
-          columns: updatedColumns,
+          issues: { ...clonedIssues },
+          columns: { ...updatedColumns },
         })
       );
       return;
@@ -150,8 +156,11 @@ export const Kanban = () => {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Draggable компонент для Kanban
-  const DraggableIssue = ({ issue, index, basket }) => {
+  const DraggableIssue = ({ issue, index, basket, issuesAllinBasket }) => {
     const ref = useRef(null);
+    // console.log(issue);
+    // console.log(basket);
+    // console.log(issuesAllinBasket);
 
     const [{ isDragging }, drag] = useDrag({
       type: ItemTypes.ISSUE,
@@ -173,6 +182,7 @@ export const Kanban = () => {
     const [{ isOver }, drop] = useDrop({
       accept: ItemTypes.ISSUE,
       hover: (item, monitor) => {
+        console.log(item);
         // Визначаю чи перетягування ближче до верхньої чи нижньої частини елемента
         const hoverBoundingRect = ref.current?.getBoundingClientRect();
         if (!hoverBoundingRect) return;
@@ -192,6 +202,42 @@ export const Kanban = () => {
         // Зберігаємо цю інформацію в draggedItem для використання в drop
         item.dropPosition = isAboveMiddle ? "before" : "after";
         item.hoveredIssueId = issue.id;
+
+        // const updatedDone = columns.doneIssues.includes(placeholder.id || placeholder.key) ? columns.doneIssues : [...columns.doneIssues, placeholder.id];
+        if (item.id === item.hoveredIssueId) {
+          return;
+        }
+        if (item.hoveredIssueId && !issuesAllinBasket.includes("placeholder")) {
+          const hoveredIssue = issues[item.hoveredIssueId];
+          console.log(hoveredIssue);
+          const hoveredBasket = basket;
+          const hoveredBasketIssues = [...issuesAllinBasket];
+          console.log(hoveredBasket);
+          console.log(hoveredBasketIssues);
+          console.log(index);
+          console.log(placeholder);
+          console.log(columns);
+          hoveredBasketIssues.splice(index, 0, placeholder.id);
+          console.log(hoveredBasketIssues);
+          const newColumn = {
+            ...columns,
+            [hoveredBasket]: [...hoveredBasketIssues],
+          };
+          console.log(newColumn);
+          const newIssues = {
+            ...issues,
+            placeholder,
+          };
+          console.log(newIssues);
+          dispatch(
+            updateColumns({
+              issues: {
+                ...newIssues,
+              },
+              columns: { ...newColumn },
+            })
+          );
+        }
       },
       drop: (item, monitor) => {
         // Оновляю інформацію перед дропом
@@ -199,6 +245,7 @@ export const Kanban = () => {
           {
             ...item,
             hoveredIssueId: issue.id,
+            hoveredIssueBasket: issue.basket,
             dropPosition: item.dropPosition || "after",
           },
           basket
@@ -220,7 +267,7 @@ export const Kanban = () => {
           ref.current = node;
           drag(drop(node));
         }}
-        onClick={() => console.log(issue)} // debug: клік по тасці
+        // onClick={() => console.log(issue)} // debug: клік по тасці
         className={cardClassName}
       >
         <Card.Body>
@@ -384,7 +431,7 @@ export const Kanban = () => {
           {columnsIssues.length > 0 ? (
             columnsIssues.map((issue, index) => (
               <div key={issues[issue].id} ref={(node) => setIssueRef(issues[issue].id, node)}>
-                <DraggableIssue issue={issues[issue]} index={index} basket={basket} />
+                <DraggableIssue issue={issues[issue]} index={index} basket={basket} issuesAllinBasket={columnsIssues} />
               </div>
             ))
           ) : (
