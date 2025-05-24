@@ -42,19 +42,18 @@ export const Kanban = () => {
     issues: state.issues.issues,
     columns: state.issues.columns,
   }));
-  const clonedIssues = JSON.parse(JSON.stringify(issues));
-  const clonedColumns = JSON.parse(JSON.stringify(columns));
-  // console.log(clonedIssues);
-  // console.log(clonedColumns);
+  // console.log(issues);
+  // console.log(columns);
 
   const placeholder = {
-    title: "",
+    title: "You are trying to put task here",
     id: "placeholder",
   };
 
   // тут ід усіх тасок в колонці
   const toDoIssues = columns.toDoIssues || [];
-  // console.log(toDoIssues);
+  console.log(toDoIssues);
+
   const inProgressIssues = columns.inProgressIssues || [];
   const doneIssues = columns.doneIssues || [];
 
@@ -62,117 +61,71 @@ export const Kanban = () => {
     if (Number(item.id) === Number(item.hoveredIssueId) && item.basket === column) {
       return;
     }
+    // console.log(item);
+    // console.log(column);
+    // item - це часткове айтем з особл даними, яку тягнемо
+    // column - це баскет(назва колонки куди тягну)
 
-    const draggedId = item.id;
-    const dragged = issues[draggedId];
+    const draggedId = item.id; // ід айтема, який тягну
 
-    const targetId = item.hoveredIssueId;
+    const dragged = issues[draggedId]; // повна інформація про ітем, який тягну
+
+    //!! поправити!! Визначаємо таргет: якщо hoveredIssueId є — це таска, над якою був ховер
+    const targetId = item.hoveredIssueId; // ід таски над якою або після
     const target = targetId ? issues[targetId] : null; // сама таска над якою або після, повна інфа
 
     const dropPosition = item.dropPosition || "after";
+
     const isDropToEmptyColumn = item.dropToEmptyColumn || false;
 
     if (!dragged) {
       return;
     }
 
+    const clonedIssues = JSON.parse(JSON.stringify(issues));
+    const clonedColumns = JSON.parse(JSON.stringify(columns));
     const clonedIssuesWithDraggedId = { ...clonedIssues[draggedId] };
-    const clonedIssuesWithTargetId = target ? { ...clonedIssues[targetId] } : null;
 
-    if (item.hoveredIssueId === placeholder.id) {
-      delete clonedIssues["placeholder"];
-      const filteredBasketColumnn = clonedColumns[item.basket].filter((issue) => Number(issue) !== Number(item.id));
-      clonedColumns[item.basket] = filteredBasketColumnn;
-      const indexPlaceholder = clonedColumns[column].indexOf("placeholder");
-      clonedColumns[column].splice(indexPlaceholder, 1, item.id);
+    // Видаляємо плейсхолдер з усіх колонок
+    Object.keys(clonedColumns).forEach((key) => {
+      if (clonedColumns[key] && Array.isArray(clonedColumns[key])) {
+        clonedColumns[key] = clonedColumns[key].filter((id) => id !== "placeholder");
+      }
+    });
+    delete clonedIssues["placeholder"];
 
-      console.log(clonedIssues);
-      console.log(clonedColumns);
-
-      dispatch(
-        updateColumns({
-          issues: { ...clonedIssues },
-          columns: { ...clonedColumns },
-        })
+    // Видаляємо таску з початкової колонки
+    const sourceColumn = Object.keys(clonedColumns).find((key) =>
+      clonedColumns[key] && clonedColumns[key].includes(Number(draggedId))
+    );
+    if (sourceColumn) {
+      clonedColumns[sourceColumn] = clonedColumns[sourceColumn].filter(
+        (id) => Number(id) !== Number(draggedId)
       );
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Обробка випадку, коли кидаємо в ПОРОЖНЮ КОЛОНКУ або коли явно вказано dropToEmptyColumn
-    else if (isDropToEmptyColumn || (!clonedIssuesWithTargetId && (!columns[column] || columns[column].length === 0))) {
-      // const updatedColumns = { ...columns }; // копія колонки зі стейту
-      // Тут я стираю взагалі таску, яку тягну за id з усіх тасок
-      Object.keys(clonedColumns).forEach((key) => {
-        if (clonedColumns[key] === item.id) {
-          return;
-        }
-        if (clonedColumns[key] && Array.isArray(clonedColumns[key])) {
-          clonedColumns[key] = clonedColumns[key].filter((id) => id !== parseInt(draggedId));
-        }
-      });
 
-      // Додаю id до нової колонки
-      if (!clonedColumns[column]) {
-        clonedColumns[column] = [];
-      }
-      clonedColumns[column].push(parseInt(draggedId));
-
-      dispatch(
-        updateColumns({
-          issues: { ...clonedIssues },
-          columns: { ...clonedColumns },
-        })
-      );
-      return;
-    } else if (item.hoveredIssueId !== placeholder.id) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      const issuesArray = Object.values(clonedIssues);
-      // Оновлюю позиції тасок
-      const updatedIssuesArray = updateIssue(issuesArray, clonedIssuesWithDraggedId);
-      console.log(updatedIssuesArray);
-
-      // Перетворюю масив назад в об'єкт з id як ключами
-      const updatedIssuesObj = {};
-      updatedIssuesArray.forEach((issue) => {
-        updatedIssuesObj[issue.id] = issue;
-      });
-
-      Object.keys(clonedColumns).forEach((key) => {
-        if (clonedColumns[key] && Array.isArray(clonedColumns[key])) {
-          console.log(clonedColumns[key]);
-          clonedColumns[key] = clonedColumns[key].filter((id) => id !== parseInt(draggedId));
-          console.log(clonedColumns[key]);
-        }
-      });
-
-      // Якщо target є, додаю dragged до колонки target
-      if (clonedIssuesWithTargetId) {
-        const targetColumn = Object.keys(clonedColumns).find((key) => clonedColumns[key] && clonedColumns[key].includes(parseInt(targetId)));
-        // console.log(targetColumn);
-
-        if (targetColumn) {
-          const targetIndex = clonedColumns[targetColumn].indexOf(parseInt(targetId));
-          // const insertIndex = dropPosition === "after" ? targetIndex + 1 : targetIndex;
-          // console.log(draggedId);
-
-          clonedColumns[targetColumn].splice(targetIndex, 0, parseInt(draggedId));
-        }
-      } else {
-        // Якщо таргета немає, додаємо в кінець вказаної колонки
-        if (!clonedColumns[column]) {
-          clonedColumns[column] = [];
-        }
-        clonedColumns[column].push(parseInt(draggedId));
-      }
-      console.log(updatedIssuesObj);
-      console.log(clonedColumns);
-
-      dispatch(
-        updateColumns({
-          issues: updatedIssuesObj,
-          columns: clonedColumns,
-        })
-      );
+    // Додаємо таску в нову колонку
+    if (!clonedColumns[column]) {
+      clonedColumns[column] = [];
     }
+
+    const targetIndex = targetId ? clonedColumns[column].indexOf(Number(targetId)) : -1;
+
+    if (targetIndex !== -1) {
+      const insertIndex = dropPosition === "after" ? targetIndex + 1 : targetIndex;
+      clonedColumns[column].splice(insertIndex, 0, Number(draggedId));
+    } else {
+      clonedColumns[column].push(Number(draggedId));
+    }
+
+    console.log("Updated columns:", clonedColumns);
+
+    dispatch(
+      updateColumns({
+        issues: clonedIssues,
+        columns: clonedColumns,
+      })
+    );
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,13 +158,7 @@ export const Kanban = () => {
       accept: ItemTypes.ISSUE,
       hover: (item, monitor) => {
         // console.log(item);
-
-        if (clonedColumns[basket].includes("placeholder") && item.hoveredIssueId !== "placeholder") {
-          const indexOfPlaceHolder = clonedColumns[basket].indexOf("placeholder");
-          clonedColumns[basket].splice(indexOfPlaceHolder, 1);
-          dispatch(updateColumns({ columns: { ...clonedColumns } }));
-        }
-
+        // Визначаю чи перетягування ближче до верхньої чи нижньої частини елемента
         const hoverBoundingRect = ref.current?.getBoundingClientRect();
         if (!hoverBoundingRect) return;
 
@@ -446,40 +393,32 @@ export const Kanban = () => {
     };
 
     return (
-      <Card
-        ref={(node) => {
+      <Card ref={(node) => {
           columnRef.current = node;
           drop(node);
         }}
         className={columnClassName}
-        lu
       >
         <Card.Body className="my-custom-card">
           <Card.Title>{title}</Card.Title>
           {/* Відображаємо всі таски в колонці */}
           {columnsIssues.length > 0 ? (
-            columnsIssues.map((issue, index) =>
-              issue === "placeholder" ? (
-                <div className="my-placeholder" key={issue} ref={(node) => setIssueRef(issue, node)}>
-                  {/* <DraggableIssue className="my-placeholder" issue={issues[issue]} index={index} basket={basket} issuesAllinBasket={columnsIssues} /> */}
-                </div>
-              ) : (
-                <div key={issue} ref={(node) => setIssueRef(issue, node)}>
-                  <DraggableIssue issue={issues[issue]} index={index} basket={basket} issuesAllinBasket={columnsIssues} />
-                </div>
-              )
-            )
+            columnsIssues.map((issue, index) => (
+              <div key={issue} ref={(node) => setIssueRef(issue, node)}>
+                <DraggableIssue issue={issues[issue]} index={index} basket={basket} issuesAllinBasket={columnsIssues} />
+              </div>
+            ))
           ) : (
             <Card.Text>Немає завдань в {title}</Card.Text>
           )}
           {/* Відображаємо плейсхолдер для порожньої колонки */}
           {renderEmptyColumnPlaceholder()}
           {/* Стандартний плейсхолдер для вставки між елементами */}
-          {/* {isOver && canDrop && dragItem && columnsIssues.length > 0 && (
+          {isOver && canDrop && dragItem && columnsIssues.length > 0 && (
             <div className="drop-placeholder" style={getPlaceholderPosition()}>
               <div className="drop-placeholder-line"></div>
             </div>
-          )} */}
+          )}
         </Card.Body>
       </Card>
     );
