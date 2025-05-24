@@ -1,13 +1,12 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useSelector, useDispatch } from "react-redux";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useDrag, useDrop } from "react-dnd";
-import { updateColumns, updateIssuesSlice } from "../redux/issues/issuesSlice";
+import { updateColumns } from "../redux/issues/issuesSlice";
 import "./Kanbans.css";
-import { hover } from "@testing-library/user-event/dist/hover";
 
 const ItemTypes = {
   ISSUE: "issue",
@@ -20,10 +19,8 @@ const updateIssue = (issuesArray, clonedIssuesWithDraggedId) => {
   }
   const normalizeId = (id) => (typeof id === "string" ? parseInt(id, 10) : id);
 
-  const dragged = { ...clonedIssuesWithDraggedId }; // розпилюємо таску яку тягнемо
+  const dragged = { ...clonedIssuesWithDraggedId };
   const updatedIssues = [...issuesArray];
-  // console.log(issuesArray);
-  // console.log(updatedIssues);
 
   // Оновлюємо перетягуваний елемент у масиві
   const idx = updatedIssues.findIndex((i) => normalizeId(i.id) === normalizeId(dragged.id));
@@ -44,8 +41,6 @@ export const Kanban = () => {
   }));
   const clonedIssues = JSON.parse(JSON.stringify(issues));
   const clonedColumns = JSON.parse(JSON.stringify(columns));
-  // console.log(clonedIssues);
-  // console.log(clonedColumns);
 
   const placeholder = {
     title: "",
@@ -54,7 +49,6 @@ export const Kanban = () => {
 
   // тут ід усіх тасок в колонці
   const toDoIssues = columns.toDoIssues || [];
-  // console.log(toDoIssues);
   const inProgressIssues = columns.inProgressIssues || [];
   const doneIssues = columns.doneIssues || [];
 
@@ -67,7 +61,7 @@ export const Kanban = () => {
     const dragged = issues[draggedId];
 
     const targetId = item.hoveredIssueId;
-    const target = targetId ? issues[targetId] : null; // сама таска над якою або після, повна інфа
+    const target = targetId ? issues[targetId] : null;
 
     const dropPosition = item.dropPosition || "after";
     const isDropToEmptyColumn = item.dropToEmptyColumn || false;
@@ -79,6 +73,7 @@ export const Kanban = () => {
     const clonedIssuesWithDraggedId = { ...clonedIssues[draggedId] };
     const clonedIssuesWithTargetId = target ? { ...clonedIssues[targetId] } : null;
 
+    // якщо над плейсхолдером дроп
     if (item.hoveredIssueId === placeholder.id) {
       delete clonedIssues["placeholder"];
       const filteredBasketColumnn = clonedColumns[item.basket].filter((issue) => Number(issue) !== Number(item.id));
@@ -96,15 +91,13 @@ export const Kanban = () => {
         })
       );
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Обробка випадку, коли кидаємо в ПОРОЖНЮ КОЛОНКУ або коли явно вказано dropToEmptyColumn
     else if (isDropToEmptyColumn || (!clonedIssuesWithTargetId && (!columns[column] || columns[column].length === 0))) {
-      // const updatedColumns = { ...columns }; // копія колонки зі стейту
-      // Тут я стираю взагалі таску, яку тягну за id з усіх тасок
       Object.keys(clonedColumns).forEach((key) => {
         if (clonedColumns[key] === item.id) {
           return;
         }
+        // стираю таску з колонки з якої тягнула
         if (clonedColumns[key] && Array.isArray(clonedColumns[key])) {
           clonedColumns[key] = clonedColumns[key].filter((id) => id !== parseInt(draggedId));
         }
@@ -122,9 +115,8 @@ export const Kanban = () => {
           columns: { ...clonedColumns },
         })
       );
-      return;
+      // якщо ховер змістився з плейсхолдера
     } else if (item.hoveredIssueId !== placeholder.id) {
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
       const issuesArray = Object.values(clonedIssues);
       // Оновлюю позиції тасок
       const updatedIssuesArray = updateIssue(issuesArray, clonedIssuesWithDraggedId);
@@ -152,15 +144,12 @@ export const Kanban = () => {
         if (targetColumn) {
           const targetIndex = clonedColumns[targetColumn].indexOf(parseInt(targetId));
           // const insertIndex = dropPosition === "after" ? targetIndex + 1 : targetIndex;
-          // console.log(draggedId);
-
           clonedColumns[targetColumn].splice(targetIndex, 0, parseInt(draggedId));
         }
-      } else {
-        // Якщо таргета немає, додаємо в кінець вказаної колонки
-        if (!clonedColumns[column]) {
-          clonedColumns[column] = [];
-        }
+      }
+      // Якщо таргета немає, додаємо в кінець вказаної колонки
+      else if (!clonedColumns[column]) {
+        clonedColumns[column] = [];
         clonedColumns[column].push(parseInt(draggedId));
       }
       console.log(updatedIssuesObj);
@@ -176,7 +165,6 @@ export const Kanban = () => {
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Draggable компонент для Kanban
 
   const DraggableIssue = ({ issue, index, basket, issuesAllinBasket }) => {
     const ref = useRef(null);
@@ -240,11 +228,6 @@ export const Kanban = () => {
           // console.log(hoveredIssue);
           const hoveredBasket = basket;
           const hoveredBasketIssues = [...issuesAllinBasket];
-          // console.log(hoveredBasket);
-          // console.log(hoveredBasketIssues);
-          // console.log(index);
-          // console.log(placeholder);
-          // console.log(columns);
           hoveredBasketIssues.splice(index, 0, placeholder.id);
           // console.log(hoveredBasketIssues);
           const newColumn = {
@@ -295,7 +278,6 @@ export const Kanban = () => {
           ref.current = node;
           drag(drop(node));
         }}
-        // onClick={() => console.log(issue)} // debug: клік по тасці
         className={cardClassName}
       >
         <Card.Body>
@@ -320,7 +302,6 @@ export const Kanban = () => {
           item.dropToEmptyColumn = true;
           return;
         }
-
         let closestIssue = null;
         let closestDistance = Infinity;
         let position = "before";
@@ -437,7 +418,7 @@ export const Kanban = () => {
       if (!isOver || !canDrop || !dragItem || columnsIssues.length > 0) return null;
 
       return (
-        <div className="empty-column-drop-placeholder" style={{ height: dragItem.size?.height || 100 }}>
+        <div className="my-placeholder" style={{ height: dragItem.size?.height || 100 }}>
           <span>
             Переміщення '{dragItem.id}' в колонку "{title}"
           </span>
@@ -461,7 +442,7 @@ export const Kanban = () => {
             columnsIssues.map((issue, index) =>
               issue === "placeholder" ? (
                 <div className="my-placeholder" key={issue} ref={(node) => setIssueRef(issue, node)}>
-                  {/* <DraggableIssue className="my-placeholder" issue={issues[issue]} index={index} basket={basket} issuesAllinBasket={columnsIssues} /> */}
+                  <span>Переміщення в колонку "{title}"</span>
                 </div>
               ) : (
                 <div key={issue} ref={(node) => setIssueRef(issue, node)}>
@@ -474,12 +455,6 @@ export const Kanban = () => {
           )}
           {/* Відображаємо плейсхолдер для порожньої колонки */}
           {renderEmptyColumnPlaceholder()}
-          {/* Стандартний плейсхолдер для вставки між елементами */}
-          {/* {isOver && canDrop && dragItem && columnsIssues.length > 0 && (
-            <div className="drop-placeholder" style={getPlaceholderPosition()}>
-              <div className="drop-placeholder-line"></div>
-            </div>
-          )} */}
         </Card.Body>
       </Card>
     );
