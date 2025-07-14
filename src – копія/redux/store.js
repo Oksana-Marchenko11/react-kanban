@@ -3,7 +3,7 @@ import issuesReducer from "./issues/issuesSlice";
 import searchQueryReducer from "./searchQuery/searchQuerySlice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-// import logger from "redux-logger";
+import logger from "redux-logger";
 
 const issuesConfig = {
   key: "issues",
@@ -14,9 +14,15 @@ const searchQueryConfig = {
   key: "searchQuery",
   storage,
 };
-export const persistedIssuesReducer = persistReducer(issuesConfig, issuesReducer);
+export const persistedIssuesReducer = persistReducer(
+  issuesConfig,
+  issuesReducer
+);
 
-export const persistedSearchQueryReducer = persistReducer(searchQueryConfig, searchQueryReducer);
+export const persistedSearchQueryReducer = persistReducer(
+  searchQueryConfig,
+  searchQueryReducer
+);
 
 export const store = configureStore({
   reducer: {
@@ -26,8 +32,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
-  // .concat(logger),
+    }).concat(logger),
 });
 
 export const persistor = persistStore(store);

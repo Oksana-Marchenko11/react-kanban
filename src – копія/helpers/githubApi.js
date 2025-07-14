@@ -67,19 +67,18 @@ export const getIssues = createAsyncThunk(
           issuesData.columns.toDoIssues.push(issue.id);
         }
         issuesData.count++;
-        // console.log(issuesData);
+        console.log(issuesData);
       });
 
       // if (issuesData.issues.length) {
       issuesData.issues["placeholder"] = {
         id: "placeholder",
-        title: "placeholder",
-        _column: "",
+        _colomn: "",
         _position: 0,
       };
       // }
 
-      // console.log(issuesData);
+      console.log(issuesData);
 
       return issuesData;
     } catch (error) {
