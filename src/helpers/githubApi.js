@@ -24,10 +24,8 @@ export const getIssues = createAsyncThunk(
     const endpoint = `${apiUrl}/repos/${url.user}/${url.repo}/issues?state=all`;
     try {
       const response = await fetch(endpoint);
-      console.log(response);
       if (!response.ok) throw new Error("Failed to fetch");
       const data = await response.json();
-      console.log(data);
 
       const issuesData = {
         issues: {},

@@ -70,7 +70,6 @@ const DraggableIssue = ({ issue }) => {
   const ref = useRef(null);
   const dispatch = useDispatch();
   const issues = useSelector((state) => state.issues.issues);
-  const clonedIssues = JSON.parse(JSON.stringify(issues));
 
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.ISSUE,
@@ -80,7 +79,6 @@ const DraggableIssue = ({ issue }) => {
         _column: issue._column,
         _position: issue._position,
       };
-      console.log("📦 drag item:", data); // <--- додай
       return data;
     },
     collect: (monitor) => ({
@@ -94,29 +92,38 @@ const DraggableIssue = ({ issue }) => {
       isOver: monitor.isOver({ shallow: true }),
     }),
     hover: (item) => {
+      /* Тут  не вмстачає умов для переміщення плейсхолдера і уникненн повторень */
       if (item.id === issue.id) return;
 
-      // const placeholder = clonedIssues.placeholder;
-      if (clonedIssues.placeholder._position !== issue._position && clonedIssues.placeholder._column !== issue._column) {
-        const hoveredIssue = issue;
-        clonedIssues.placeholder._column = issue._column;
-        clonedIssues.placeholder._position = issue._position;
-        clonedIssues[hoveredIssue.id]._position += 0.5;
-        dispatch(updateIssuesSlice(clonedIssues));
-      }
+      if (issue.id === "placeholder") return;
+      if (issues.placeholder._position === issue._position && issues.placeholder._column === issue._column) return;
+
+      console.log(issue);
+
+      const clonedIssues = JSON.parse(JSON.stringify(issues));
+
+      clonedIssues.placeholder._column = issue._column;
+      clonedIssues.placeholder._position = issue._position;
+      clonedIssues[issue.id]._position += 0.5;
+
+      // clonedIssues[hoveredIssue.id]._position += 0.5;
+
+      // if (clonedIssues.placeholder._position !== issue._position && clonedIssues.placeholder._column !== issue._column) {
+      dispatch(updateIssuesSlice(clonedIssues));
+      // }
     },
     drop: (item, monitor) => {
       // Drop тільки на placeholder
-      if (monitor.didDrop()) {
-        return; // Хтось вже спіймав drop
-      }
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+      if (monitor.didDrop()) return;
 
       if (issue.id === "placeholder") {
-        clonedIssues[item.id]._column = clonedIssues.placeholder._column;
-        clonedIssues[item.id]._position = clonedIssues.placeholder._position;
-        clonedIssues.placeholder._column = "";
-        dispatch(updateIssuesSlice(clonedIssues));
+        // const clonedIssues = JSON.parse(JSON.stringify(issues));
+
+        const updatedIssues = JSON.parse(JSON.stringify(issues));
+        updatedIssues[item.id]._column = issues.placeholder._column;
+        updatedIssues[item.id]._position = issues.placeholder._position;
+        updatedIssues.placeholder._column = "";
+        dispatch(updateIssuesSlice(updatedIssues));
       }
     },
   });
@@ -150,22 +157,21 @@ export const Kanban = () => {
   }));
   const clonedIssues = JSON.parse(JSON.stringify(issues));
 
-  // console.log(clonedIssues);
-
   const toDoIssues =
     Object.values(clonedIssues)
-      .filter((task) => task._column === "toDoIssues")
+      .filter((task) => task && task._column === "toDoIssues")
       .sort((a, b) => a._position - b._position) || [];
 
   const inProgressIssues =
     Object.values(clonedIssues)
-      .filter((task) => task._column === "inProgressIssues")
+      .filter((task) => task && task._column === "inProgressIssues")
       .sort((a, b) => a._position - b._position) || [];
 
   const doneIssues =
     Object.values(clonedIssues)
-      .filter((task) => task._column === "doneIssues")
+      .filter((task) => task && task._column === "doneIssues")
       .sort((a, b) => a._position - b._position) || [];
+
   return (
     <DndProvider backend={HTML5Backend}>
       <Container fluid className="px-4">
