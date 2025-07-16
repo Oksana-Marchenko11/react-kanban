@@ -54,7 +54,7 @@ const DroppableColumn = ({ title, columnsIssues, column }) => {
           columnsIssues.map((issue) => {
             return (
               // <div className="div_question" key={issue.id} style={{ width: "100%" }}>
-              <DraggableIssue issue={issue} key={issue.id} />
+              <DraggableIssue target={issue} key={issue.id} />
               // </div>
             );
           })
@@ -66,7 +66,7 @@ const DroppableColumn = ({ title, columnsIssues, column }) => {
   );
 };
 
-const DraggableIssue = ({ issue }) => {
+const DraggableIssue = ({ target }) => {
   const ref = useRef(null);
   const dispatch = useDispatch();
   const issues = useSelector((state) => state.issues.issues);
@@ -75,9 +75,9 @@ const DraggableIssue = ({ issue }) => {
     type: ItemTypes.ISSUE,
     item: () => {
       const data = {
-        id: issue.id,
-        _column: issue._column,
-        _position: issue._position,
+        id: target.id,
+        _column: target._column,
+        _position: target._position,
       };
       return data;
     },
@@ -92,33 +92,24 @@ const DraggableIssue = ({ issue }) => {
       isOver: monitor.isOver({ shallow: true }),
     }),
     hover: (item) => {
-      /* Тут  не вмстачає умов для переміщення плейсхолдера і уникненн повторень */
-      if (item.id === issue.id) return;
-
-      if (issue.id === "placeholder") return;
-      if (issues.placeholder._position === issue._position && issues.placeholder._column === issue._column) return;
-
-      console.log(issue);
+      if (item.id === target.id) return;
+      console.log(target);
 
       const clonedIssues = JSON.parse(JSON.stringify(issues));
 
-      clonedIssues.placeholder._column = issue._column;
-      clonedIssues.placeholder._position = issue._position;
-      clonedIssues[issue.id]._position += 0.5;
-
-      // clonedIssues[hoveredIssue.id]._position += 0.5;
-
-      // if (clonedIssues.placeholder._position !== issue._position && clonedIssues.placeholder._column !== issue._column) {
+      if (target.id !== "placeholder") {
+        clonedIssues.placeholder._column = target._column;
+        clonedIssues.placeholder._position = target._position - 0.5;
+      }
       dispatch(updateIssuesSlice(clonedIssues));
       // }
+      if (target.id === "placeholder") return;
     },
     drop: (item, monitor) => {
       // Drop тільки на placeholder
       if (monitor.didDrop()) return;
 
-      if (issue.id === "placeholder") {
-        // const clonedIssues = JSON.parse(JSON.stringify(issues));
-
+      if (target.id === "placeholder") {
         const updatedIssues = JSON.parse(JSON.stringify(issues));
         updatedIssues[item.id]._column = issues.placeholder._column;
         updatedIssues[item.id]._position = issues.placeholder._position;
@@ -140,16 +131,14 @@ const DraggableIssue = ({ issue }) => {
       style={{ width: "100%" }}
     >
       <Card.Body className="card_exactly">
-        <Card.Title className="text_title">{issue.title}</Card.Title>
-        <Card.Text className="text">{issue.title}</Card.Text>
+        <Card.Title className="text_title">{target.title}</Card.Title>
+        <Card.Text className="text">{target.title}</Card.Text>
       </Card.Body>
-      <div className="issue-key">Key: {issue.id}</div>
+      <div className="issue-key">Key: {target.id}</div>
     </Card>
   );
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const Kanban = () => {
   const { issues } = useSelector((state) => ({
