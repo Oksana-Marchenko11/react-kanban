@@ -31,7 +31,6 @@ const DroppableColumn = ({ title, columnsIssues, column }) => {
     drop: (item, monitor) => {
       const clonedIssues = JSON.parse(JSON.stringify(issues));
       let b = monitor.isOver({ shallow: true });
-      console.log(b);
       if (b !== true) return;
       clonedIssues[item.id]._column = issues.placeholder._column;
       clonedIssues[item.id]._position = issues.placeholder._position;
@@ -87,9 +86,14 @@ const DraggableIssue = ({ target }) => {
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-    // end: (item, monitor) => {
-    //   console.log("Dropped!", item, monitor);
-    // },
+    end: (item, monitor) => {
+      const dropRezult = monitor.getDropResult();
+      const clonedIssues = JSON.parse(JSON.stringify(issues));
+      if (dropRezult === null) {
+        clonedIssues.placeholder._column = "";
+        dispatch(updateIssuesSlice(clonedIssues));
+      }
+    },
   });
 
   const [{ isOver }, drop] = useDrop({
@@ -107,7 +111,6 @@ const DraggableIssue = ({ target }) => {
         clonedIssues.placeholder._position = target._position - 0.5;
       }
       dispatch(updateIssuesSlice(clonedIssues));
-      if (target.id === "placeholder") return;
     },
     drop: (item, monitor) => {
       const updatedIssues = JSON.parse(JSON.stringify(issues));
@@ -117,7 +120,6 @@ const DraggableIssue = ({ target }) => {
         updatedIssues[item.id]._position = issues.placeholder._position;
         updatedIssues.placeholder._column = "";
       } else {
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         updatedIssues.placeholder._column = "";
       }
       dispatch(updateIssuesSlice(updatedIssues));
