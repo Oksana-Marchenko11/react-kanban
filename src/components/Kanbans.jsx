@@ -16,24 +16,27 @@ const DroppableColumn = ({ title, columnsIssues, column }) => {
   const columnRef = useRef(null);
   const dispatch = useDispatch();
   const issues = useSelector((state) => state.issues.issues);
-  const clonedIssues = JSON.parse(JSON.stringify(issues));
 
-  // Дроп на всю колонку (для зміни basket)
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.ISSUE,
     collect: (monitor) => ({
       isOver: monitor.isOver({ shallow: true }),
-      // dragItem: monitor.getItem(),
-      // clientOffset: monitor.getClientOffset(),
     }),
     hover: (item, monitor) => {
+      const clonedIssues = JSON.parse(JSON.stringify(issues));
       clonedIssues.placeholder._position = 100;
       clonedIssues.placeholder._column = column;
-      dispatch(
-        updateIssuesSlice({
-          ...clonedIssues,
-        })
-      );
+      dispatch(updateIssuesSlice(clonedIssues));
+    },
+    drop: (item, monitor) => {
+      const clonedIssues = JSON.parse(JSON.stringify(issues));
+      let b = monitor.isOver({ shallow: true });
+      console.log(b);
+      if (b !== true) return;
+      clonedIssues[item.id]._column = issues.placeholder._column;
+      clonedIssues[item.id]._position = issues.placeholder._position;
+      clonedIssues.placeholder._column = "";
+      dispatch(updateIssuesSlice(clonedIssues));
     },
   });
 
@@ -84,6 +87,9 @@ const DraggableIssue = ({ target }) => {
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
+    // end: (item, monitor) => {
+    //   console.log("Dropped!", item, monitor);
+    // },
   });
 
   const [{ isOver }, drop] = useDrop({
@@ -91,9 +97,8 @@ const DraggableIssue = ({ target }) => {
     collect: (monitor) => ({
       isOver: monitor.isOver({ shallow: true }),
     }),
-    hover: (item) => {
+    hover: (item, monitor) => {
       if (item.id === target.id) return;
-      console.log(target);
 
       const clonedIssues = JSON.parse(JSON.stringify(issues));
 
@@ -102,20 +107,20 @@ const DraggableIssue = ({ target }) => {
         clonedIssues.placeholder._position = target._position - 0.5;
       }
       dispatch(updateIssuesSlice(clonedIssues));
-      // }
       if (target.id === "placeholder") return;
     },
     drop: (item, monitor) => {
-      // Drop тільки на placeholder
-      if (monitor.didDrop()) return;
+      const updatedIssues = JSON.parse(JSON.stringify(issues));
 
       if (target.id === "placeholder") {
-        const updatedIssues = JSON.parse(JSON.stringify(issues));
         updatedIssues[item.id]._column = issues.placeholder._column;
         updatedIssues[item.id]._position = issues.placeholder._position;
         updatedIssues.placeholder._column = "";
-        dispatch(updateIssuesSlice(updatedIssues));
+      } else {
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        updatedIssues.placeholder._column = "";
       }
+      dispatch(updateIssuesSlice(updatedIssues));
     },
   });
 
