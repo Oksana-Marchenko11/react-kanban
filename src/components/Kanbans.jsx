@@ -33,18 +33,7 @@ const DroppableColumn = ({ title, columnsIssues, column }) => {
           clonedIssues.placeholder._column = column;
           dispatch(updateIssuesSlice(clonedIssues));
         }
-      }, 500);
-    },
-    drop: (item, monitor) => {
-      setTimeout(() => {
-        const clonedIssues = JSON.parse(JSON.stringify(issues));
-        let b = monitor.isOver({ shallow: true });
-        if (b !== true) return;
-        clonedIssues[item.id]._column = issues.placeholder._column;
-        clonedIssues[item.id]._position = issues.placeholder._position;
-        clonedIssues.placeholder._column = "";
-        dispatch(updateIssuesSlice(clonedIssues));
-      }, 500);
+      }, 10);
     },
   });
 
@@ -91,12 +80,14 @@ const DraggableIssue = ({ target }) => {
       isDragging: monitor.isDragging(),
     }),
     end: (item, monitor) => {
-      const dropRezult = monitor.getDropResult();
-      const clonedIssues = JSON.parse(JSON.stringify(issues));
-      if (dropRezult === null) {
-        clonedIssues.placeholder._column = "";
-        dispatch(updateIssuesSlice(clonedIssues));
-      }
+      setTimeout(() => {
+        const dropRezult = monitor.getDropResult();
+        const clonedIssues = JSON.parse(JSON.stringify(issues));
+        if (dropRezult === null) {
+          clonedIssues.placeholder._column = "";
+          dispatch(updateIssuesSlice(clonedIssues));
+        }
+      }, 10);
     },
   });
 
@@ -107,6 +98,7 @@ const DraggableIssue = ({ target }) => {
     }),
     hover: (item, monitor) => {
       if (item.id === target.id) return;
+      if (item.id === "placeholder") return;
 
       const clonedIssues = JSON.parse(JSON.stringify(issues));
 
@@ -117,16 +109,18 @@ const DraggableIssue = ({ target }) => {
       dispatch(updateIssuesSlice(clonedIssues));
     },
     drop: (item, monitor) => {
-      const updatedIssues = JSON.parse(JSON.stringify(issues));
+      setTimeout(() => {
+        const updatedIssues = JSON.parse(JSON.stringify(issues));
 
-      if (target.id === "placeholder") {
-        updatedIssues[item.id]._column = issues.placeholder._column;
-        updatedIssues[item.id]._position = issues.placeholder._position;
-        updatedIssues.placeholder._column = "";
-      } else {
-        updatedIssues.placeholder._column = "";
-      }
-      dispatch(updateIssuesSlice(updatedIssues));
+        if (target.id === "placeholder") {
+          updatedIssues[item.id]._column = issues.placeholder._column;
+          updatedIssues[item.id]._position = issues.placeholder._position;
+          updatedIssues.placeholder._column = "";
+        } else {
+          updatedIssues.placeholder._column = "";
+        }
+        dispatch(updateIssuesSlice(updatedIssues));
+      }, 20);
     },
   });
 
@@ -139,7 +133,6 @@ const DraggableIssue = ({ target }) => {
         drag(drop(node));
       }}
       className={cardClassName}
-      // style={{ width: "100%", backgroundColor: "#ef811a" }}
     >
       <Card.Body className="issue_body">
         <Card.Title className="text_title">{target.title}</Card.Title>
