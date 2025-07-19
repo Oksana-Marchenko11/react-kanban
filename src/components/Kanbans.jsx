@@ -17,29 +17,38 @@ const DroppableColumn = ({ title, columnsIssues, column }) => {
   const dispatch = useDispatch();
   const issues = useSelector((state) => state.issues.issues);
 
-  const [{ isOver, canDrop }, drop] = useDrop({
+  const [, drop] = useDrop({
     accept: ItemTypes.ISSUE,
     collect: (monitor) => ({
       isOver: monitor.isOver({ shallow: true }),
     }),
     hover: (item, monitor) => {
-      const clonedIssues = JSON.parse(JSON.stringify(issues));
-      clonedIssues.placeholder._position = 100;
-      clonedIssues.placeholder._column = column;
-      dispatch(updateIssuesSlice(clonedIssues));
+      if (issues.placeholder._column === column && issues.placeholder._position === 100) return;
+      if (item._column === column) return;
+
+      setTimeout(() => {
+        const clonedIssues = JSON.parse(JSON.stringify(issues));
+        if (clonedIssues.placeholder._column !== column) {
+          clonedIssues.placeholder._position = 100;
+          clonedIssues.placeholder._column = column;
+          dispatch(updateIssuesSlice(clonedIssues));
+        }
+      }, 500);
     },
     drop: (item, monitor) => {
-      const clonedIssues = JSON.parse(JSON.stringify(issues));
-      let b = monitor.isOver({ shallow: true });
-      if (b !== true) return;
-      clonedIssues[item.id]._column = issues.placeholder._column;
-      clonedIssues[item.id]._position = issues.placeholder._position;
-      clonedIssues.placeholder._column = "";
-      dispatch(updateIssuesSlice(clonedIssues));
+      setTimeout(() => {
+        const clonedIssues = JSON.parse(JSON.stringify(issues));
+        let b = monitor.isOver({ shallow: true });
+        if (b !== true) return;
+        clonedIssues[item.id]._column = issues.placeholder._column;
+        clonedIssues[item.id]._position = issues.placeholder._position;
+        clonedIssues.placeholder._column = "";
+        dispatch(updateIssuesSlice(clonedIssues));
+      }, 500);
     },
   });
 
-  const columnClassName = `myCard  column-drop-preview ${isOver && canDrop ? "column-drop-preview-active" : ""}`;
+  // const columnClassName = `column-drop-preview ${isOver && canDrop ? "column-drop-preview-active" : ""}`;
 
   return (
     <Card
@@ -47,18 +56,13 @@ const DroppableColumn = ({ title, columnsIssues, column }) => {
         columnRef.current = node;
         drop(node);
       }}
-      className={columnClassName}
+      className={"card_wrapper"}
     >
-      <Card.Body className="my-custom-card">
-        <Card.Title>{title}</Card.Title>
-        {/* Відображаємо всі таски в колонці */}
+      <Card.Body className="card_body">
+        <Card.Title className="column_card_title">{title}</Card.Title>
         {columnsIssues.length > 0 ? (
           columnsIssues.map((issue) => {
-            return (
-              // <div className="div_question" key={issue.id} style={{ width: "100%" }}>
-              <DraggableIssue target={issue} key={issue.id} />
-              // </div>
-            );
+            return <DraggableIssue target={issue} key={issue.id} />;
           })
         ) : (
           <Card.Text>Немає завдань в {title}</Card.Text>
@@ -126,7 +130,7 @@ const DraggableIssue = ({ target }) => {
     },
   });
 
-  const cardClassName = `issue-card card_wrapper mb-3 ${isOver ? "issue-card-drop-target drop-target" : ""} ${isDragging ? "issue-card-dragging" : ""}`;
+  const cardClassName = `issue-card issue_card mb-3 ${isOver ? "issue-card-drop-target drop-target" : ""} ${isDragging ? "issue-card-dragging" : ""}`;
 
   return (
     <Card
@@ -135,13 +139,13 @@ const DraggableIssue = ({ target }) => {
         drag(drop(node));
       }}
       className={cardClassName}
-      style={{ width: "100%" }}
+      // style={{ width: "100%", backgroundColor: "#ef811a" }}
     >
-      <Card.Body className="card_exactly">
+      <Card.Body className="issue_body">
         <Card.Title className="text_title">{target.title}</Card.Title>
         <Card.Text className="text">{target.title}</Card.Text>
       </Card.Body>
-      <div className="issue-key">Key: {target.id}</div>
+      {/* <div className="issue-key">Key: {target.id}</div> */}
     </Card>
   );
 };
@@ -172,13 +176,13 @@ export const Kanban = () => {
     <DndProvider backend={HTML5Backend}>
       <Container fluid className="px-4">
         <Row className="g-4">
-          <Col xs={12} sm={4} md={4}>
+          <Col xs={12} sm={4} md={4} className="column">
             <DroppableColumn title="To Do" columnsIssues={toDoIssues} column="toDoIssues" />
           </Col>
-          <Col xs={12} sm={4} md={4}>
+          <Col xs={12} sm={4} md={4} className="column">
             <DroppableColumn title="In Progress" columnsIssues={inProgressIssues} column="inProgressIssues" />
           </Col>
-          <Col xs={12} sm={4} md={4}>
+          <Col xs={12} sm={4} md={4} className="column">
             <DroppableColumn title="Done" columnsIssues={doneIssues} column="doneIssues" />
           </Col>
         </Row>
