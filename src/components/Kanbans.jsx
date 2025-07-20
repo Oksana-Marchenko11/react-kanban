@@ -97,11 +97,12 @@ const DraggableIssue = ({ target }) => {
       isOver: monitor.isOver({ shallow: true }),
     }),
     hover: (item, monitor) => {
+      console.log(target.title);
+      console.log(target._position);
       if (item.id === target.id) return;
       if (item.id === "placeholder") return;
 
       const clonedIssues = JSON.parse(JSON.stringify(issues));
-
       if (target.id !== "placeholder") {
         clonedIssues.placeholder._column = target._column;
         clonedIssues.placeholder._position = target._position - 0.5;
@@ -126,6 +127,8 @@ const DraggableIssue = ({ target }) => {
 
   const cardClassName = `issue-card issue_card mb-3 ${isOver ? "issue-card-drop-target drop-target" : ""} ${isDragging ? "issue-card-dragging" : ""}`;
 
+  const issue = target.id === "placeholder" ? "issue_placeholder" : "issue_body";
+
   return (
     <Card
       ref={(node) => {
@@ -134,7 +137,7 @@ const DraggableIssue = ({ target }) => {
       }}
       className={cardClassName}
     >
-      <Card.Body className="issue_body">
+      <Card.Body className={issue}>
         <Card.Title className="text_title">{target.title}</Card.Title>
         <Card.Text className="text">{target.title}</Card.Text>
       </Card.Body>
