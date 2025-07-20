@@ -97,7 +97,7 @@ const DraggableIssue = ({ target }) => {
       isOver: monitor.isOver({ shallow: true }),
     }),
     hover: (item, monitor) => {
-      console.log(target.title);
+      // console.log(target.title);
       console.log(target._position);
       if (item.id === target.id) return;
       if (item.id === "placeholder") return;
@@ -107,9 +107,14 @@ const DraggableIssue = ({ target }) => {
         clonedIssues.placeholder._column = target._column;
         clonedIssues.placeholder._position = target._position - 0.5;
       }
+      if (target._column === clonedIssues.placeholder._column && target._position === clonedIssues.placeholder._position + 1.5) {
+        console.log("Dimaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        clonedIssues.placeholder._position += 1;
+      }
       dispatch(updateIssuesSlice(clonedIssues));
     },
     drop: (item, monitor) => {
+      console.log(target._position);
       setTimeout(() => {
         const updatedIssues = JSON.parse(JSON.stringify(issues));
 
@@ -117,10 +122,35 @@ const DraggableIssue = ({ target }) => {
           updatedIssues[item.id]._column = issues.placeholder._column;
           updatedIssues[item.id]._position = issues.placeholder._position;
           updatedIssues.placeholder._column = "";
-        } else {
-          updatedIssues.placeholder._column = "";
+          updatedIssues.placeholder._position = "";
+
+          let caunterA = 0;
+          let caunterB = 0;
+          let caunterC = 0;
+          Object.values(updatedIssues)
+            .sort((a, b) => a._position - b._position)
+            .forEach((key, index) => {
+              if (key.id !== "placeholder") {
+                if (key._column === "toDoIssues") {
+                  caunterA++;
+                  key._position = caunterA;
+                }
+                if (key._column === "inProgressIssues") {
+                  caunterB++;
+                  key._position = caunterB;
+                }
+                if (key._column === "doneIssues") {
+                  caunterC++;
+                  key._position = caunterC;
+                }
+              }
+            });
+          dispatch(updateIssuesSlice(updatedIssues));
+
+          caunterA = 0;
+          caunterB = 0;
+          caunterC = 0;
         }
-        dispatch(updateIssuesSlice(updatedIssues));
       }, 20);
     },
   });

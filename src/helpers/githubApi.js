@@ -48,19 +48,19 @@ export const getIssues = createAsyncThunk(
         if (issue.state === "closed") {
           position.doneIssues++;
           issuesData.issues[issue.id]["_column"] = "doneIssues";
-          issuesData.issues[issue.id]["_position"] = position.doneIssues;
+          issuesData.issues[issue.id]["_position"] = position.doneIssues - 1;
 
           issuesData.columns.doneIssues.push(issue.id);
         } else if (issue.assignees.length) {
           position.inProgressIssues++;
           issuesData.issues[issue.id]["_column"] = "inProgressIssues";
-          issuesData.issues[issue.id]["_position"] = position.inProgressIssues;
+          issuesData.issues[issue.id]["_position"] = position.inProgressIssues - 1;
 
           issuesData.columns.inProgressIssues.push(issue.id);
         } else {
           position.toDoIssues++;
           issuesData.issues[issue.id]["_column"] = "toDoIssues";
-          issuesData.issues[issue.id]["_position"] = position.toDoIssues;
+          issuesData.issues[issue.id]["_position"] = position.toDoIssues - 1;
 
           issuesData.columns.toDoIssues.push(issue.id);
         }
