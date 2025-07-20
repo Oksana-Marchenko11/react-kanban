@@ -97,20 +97,22 @@ const DraggableIssue = ({ target }) => {
       isOver: monitor.isOver({ shallow: true }),
     }),
     hover: (item, monitor) => {
-      // console.log(target.title);
-      console.log(target._position);
-      if (item.id === target.id) return;
-      if (item.id === "placeholder") return;
+      if (item.id === target.id) return; // сам над собою
+      if (item.id === "placeholder") return; // не тягнемо плейсхолдер
+      if (target.id === "placeholder") return; // не міняємо над плейсхолдером
 
       const clonedIssues = JSON.parse(JSON.stringify(issues));
-      if (target.id !== "placeholder") {
-        clonedIssues.placeholder._column = target._column;
+
+      if (clonedIssues.placeholder._position < target._position) {
+        clonedIssues.placeholder._position = target._position + 0.5;
+      } else if (clonedIssues.placeholder._position > target._position) {
         clonedIssues.placeholder._position = target._position - 0.5;
       }
-      if (target._column === clonedIssues.placeholder._column && target._position === clonedIssues.placeholder._position + 1.5) {
-        console.log("Dimaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        clonedIssues.placeholder._position += 1;
-      }
+      clonedIssues.placeholder._column = target._column;
+
+      //////////////////////////////////////////////////////////////////
+      console.log(`t: ${target._position}; p: ${clonedIssues.placeholder._position};`);
+
       dispatch(updateIssuesSlice(clonedIssues));
     },
     drop: (item, monitor) => {
