@@ -47,7 +47,7 @@
 } */
 
 .issue_card {
-  background-color: rgb(231, 118, 31);
+  background-image: linear-gradient(to bottom right, rgb(4, 27, 86), rgb(114, 171, 213));
   padding: 10px;
   /* border: 2px solid; */
   /* border-color: white; */
@@ -62,7 +62,7 @@
 }
 
 .issue_placeholder {
-  background-color: rgb(250, 224, 79);
+  background-color: rgb(234, 237, 86);
   width: 100%;
   padding: 5px 20px;
   margin: auto;
