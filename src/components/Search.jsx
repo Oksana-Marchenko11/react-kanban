@@ -41,14 +41,10 @@ export const Search = () => {
     <Form onSubmit={handleSubmit} className="search-form">
       <Row className="row-spacing">
         <Col xs={12} sm={9} md={9}>
-          <Form.Control
-            type="search"
-            placeholder="Enter Repo URL"
-            onChange={handleChange}
-          />
+          <Form.Control type="search" placeholder="Enter Repo URL" onChange={handleChange} />
         </Col>
-        <Col xs={12} sm={3} md={3} className="button-col">
-          <Button type="submit" className="gradient-btn">
+        <Col xs={12} sm={3} md={3} className="button_col">
+          <Button type="submit" className="gradient_btn">
             Load issues
           </Button>
         </Col>

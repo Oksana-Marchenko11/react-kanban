@@ -6,11 +6,22 @@
   width: 100%;
 }
 
-.gradient-btn {
-  background: linear-gradient(to right, #007bff, #0056b3);
+.gradient_btn {
+  background-image: linear-gradient(to bottom right,
+      rgb(58, 138, 219),
+      rgb(195, 219, 243));
   border: none;
-  color: white;
-  width: 100%;
+  max-width: 260px;
+  font-weight: 500 !important;
+  font-family: Verdana, Geneva, Tahoma, sans-serif !important;
+  font-size: 18px !important;
+  padding: 8px;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.form_control {
+  height: 68px;
 }
 
 .row-spacing {
@@ -18,7 +29,7 @@
 }
 
 @media (max-width: 576px) {
-  .button-col {
+  .button_col {
     margin-top: 0.5rem;
   }
 }

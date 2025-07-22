@@ -1,38 +1,3 @@
-.column {
-  background-color: transparent;
-  border: 0;
-  border-radius: 6px;
-}
-
-.card_wrapper {
-  background-color: #c530e6;
-  border: 0;
-  border-radius: 6px;
-}
-
-.card_body {
-  background-image: linear-gradient(to bottom right, rgb(58, 138, 219), rgb(195, 219, 243));
-  color: black;
-  border: 0;
-  border-radius: 6px;
-  height: 700px;
-  overflow-y: scroll;
-}
-
-/* .card_body::-webkit-scrollbar {
-  width: 10px;
-} */
-
-/* .card_body::-webkit-scrollbar-thumb {
-  background-color: #c41d1d;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #c41d1d;
-  border-radius: 10px;
-} */
-
 /* .column-drop-preview {
   transition: all 0.3s ease;
   background-color: white;
@@ -45,26 +10,3 @@
   box-shadow: 0 0 8px rgba(0, 120, 255, 0.3);
   border: 2px dashed #0078ff;
 } */
-
-.issue_card {
-  background-image: linear-gradient(to bottom right, rgb(4, 27, 86), rgb(114, 171, 213));
-  padding: 10px;
-  /* border: 2px solid; */
-  /* border-color: white; */
-}
-
-.issue_body {
-  background-color: white;
-  width: 100%;
-  padding: 5px 20px;
-  margin: auto;
-  border-radius: 4px;
-}
-
-.issue_placeholder {
-  background-color: rgb(234, 237, 86);
-  width: 100%;
-  padding: 5px 20px;
-  margin: auto;
-  border-radius: 4px;
-}

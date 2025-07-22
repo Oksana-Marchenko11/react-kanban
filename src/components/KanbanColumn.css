@@ -1,35 +1,24 @@
-.kanban-column {
-  transition: all 0.2s ease;
-  height: 100%;
-  min-height: 500px;
+.column {
+  background-color: transparent;
+  border: 0;
+  border-radius: 6px;
 }
 
-.kanban-column-drop {
-  background-color: #f0f9ff;
-  box-shadow: 0 0 5px rgba(0, 100, 255, 0.5);
+.card_wrapper {
+  background-color: #c530e6;
+  border: 0;
+  border-radius: 6px;
 }
 
-.kanban-column-title {
-  background-color: #f8f9fa;
-  padding: 10px;
-  border-bottom: 1px solid #dee2e6;
-  font-weight: bold;
+.card_body {
+  background-image: linear-gradient(to bottom right, rgb(58, 138, 219), rgb(195, 219, 243));
+  color: black;
+  border: 0;
+  border-radius: 6px;
+  height: 700px;
+  overflow-y: scroll;
 }
 
-.empty-column-placeholder {
-  text-align: center;
-  padding: 20px;
-  color: #aaa;
-  border: 2px dashed #ddd;
-  border-radius: 5px;
-  margin-top: 10px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.empty-column-drop-hover {
-  background-color: #f0f8ff;
-  border: 2px dashed #007bff;
+.column_card_title {
+  font-size: 28px !important;
 }

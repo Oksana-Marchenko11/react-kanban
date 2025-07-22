@@ -102,7 +102,7 @@ const DraggableIssue = ({ target }) => {
     },
   });
 
-  const cardClassName = `issue-card issue_card mb-3 ${isOver ? "issue-card-drop-target drop-target" : ""} ${isDragging ? "issue-card-dragging" : ""}`;
+  const cardClassName = `issue_card mb-3 ${isOver ? "issue_card_drop_target" : ""} ${isDragging ? "issue_card_dragging" : ""}`;
 
   const issue = target.id === "placeholder" ? "issue_placeholder" : "issue_body";
 
