@@ -6,6 +6,11 @@
   width: 100%;
 }
 
+.search_field::placeholder {
+  color: black;
+  font-size: 16px;
+}
+
 .gradient_btn {
   background-image: linear-gradient(to bottom right,
       rgb(58, 138, 219),

@@ -42,8 +42,8 @@ export const DroppableColumn = ({ title, columnsIssues, column }) => {
       }}
       className={"card_wrapper"}
     >
+      <Card.Title className="column_card_title">{title}</Card.Title>
       <Card.Body className="card_body">
-        <Card.Title className="column_card_title">{title}</Card.Title>
         {columnsIssues.length > 0 ? (
           columnsIssues.map((issue) => {
             return <DraggableIssue target={issue} key={issue.id} />;

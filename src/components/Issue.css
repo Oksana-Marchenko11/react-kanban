@@ -24,9 +24,10 @@
 .issue_body {
   background-color: white;
   width: 100%;
-  padding: 5px 20px;
-  margin: auto;
+  max-height: 160px;
   border-radius: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .issue_placeholder {

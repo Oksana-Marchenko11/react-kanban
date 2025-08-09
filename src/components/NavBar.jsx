@@ -14,17 +14,17 @@ export const Navbar = () => {
   return (
     <Nav className="mb-4 px-4">
       <ListGroup horizontal className="repo-list-group">
-        <ListGroupItem className="repo-item">
-          <NavLink href={userLink} className="repo-link">
+        <ListGroupItem className="repo_item">
+          <NavLink href={userLink} className="repo_link">
             {data.owner.login}
           </NavLink>
         </ListGroupItem>
-        <ListGroupItem className="repo-item">
-          <NavLink href={repoLink} className="repo-link">
+        <ListGroupItem className="repo_item">
+          <NavLink href={repoLink} className="repo_link">
             {data.name}
           </NavLink>
         </ListGroupItem>
-        <ListGroupItem className="repo-item repo-stars">{data.stargazers_count}</ListGroupItem>
+        <ListGroupItem className="repo_item repo-stars">{data.stargazers_count}</ListGroupItem>
       </ListGroup>
     </Nav>
   );

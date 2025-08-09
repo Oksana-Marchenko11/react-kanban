@@ -5,9 +5,10 @@
 }
 
 .card_wrapper {
-  background-color: #c530e6;
+  background-image: linear-gradient(to bottom right, rgb(58, 138, 219), rgb(195, 219, 243));
   border: 0;
   border-radius: 6px;
+  height: 700px;
 }
 
 .card_body {
@@ -21,4 +22,8 @@
 
 .column_card_title {
   font-size: 28px !important;
+  padding-left: 160px;
+  padding-bottom: 8px;
+  padding-top: 8px;
+  background-image: linear-gradient(to bottom right, rgb(58, 138, 219), rgb(195, 219, 243));
 }

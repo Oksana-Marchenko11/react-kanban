@@ -116,7 +116,7 @@ const DraggableIssue = ({ target }) => {
     >
       <Card.Body className={issue}>
         <Card.Title className="text_title">{target.title}</Card.Title>
-        <Card.Text className="text">{target.title}</Card.Text>
+        <Card.Text className="text">{target.body}</Card.Text>
       </Card.Body>
       {/* <div className="issue-key">Key: {target.id}</div> */}
     </Card>

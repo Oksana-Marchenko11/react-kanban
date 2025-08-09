@@ -9,22 +9,24 @@
   flex-direction: row;
 }
 
-.repo-item {
-  border-radius: 0;
+.repo_item {
+  border-radius: 50;
 }
 
-.repo-link {
+.repo_link {
   text-decoration: none;
-  color: #212529;
+  color: black !important;
+  font-size: 20px !important;
+  padding: 0 !important;
 }
 
-.repo-link:hover {
-  color: #007bff;
+.repo_link:hover {
+  color: #007bff !important;
   text-decoration: underline;
 }
 
 .repo-stars {
-  display: inline-flex;
+  display: flex;
   align-items: center;
 }
 

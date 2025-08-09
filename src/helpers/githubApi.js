@@ -71,13 +71,13 @@ export const getIssues = createAsyncThunk(
       // if (issuesData.issues.length) {
       issuesData.issues["placeholder"] = {
         id: "placeholder",
-        title: "placeholder",
+        title: "Drop here",
         _column: "",
         _position: 0,
       };
       // }
 
-      // console.log(issuesData);
+      console.log(issuesData);
 
       return issuesData;
     } catch (error) {
