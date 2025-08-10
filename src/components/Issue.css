@@ -54,3 +54,12 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif !important;
   font-size: 18px !important;
 }
+
+/*
+.modal {
+  width: 700px !important;
+} */
+.modal_body {
+  border: 4px solid #6faeed;
+  color: #09325c !important;
+}

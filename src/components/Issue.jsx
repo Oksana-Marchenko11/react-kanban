@@ -127,12 +127,12 @@ const DraggableIssue = ({ target }) => {
         {/* <div className="issue-key">Key: {target.id}</div> */}
       </Card>
       {show && (
-        <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
+        <Modal show={show} onHide={handleClose} className="modal">
+          <Modal.Header className="modal_body" closeButton>
             <Modal.Title>{target.title}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{target.body}</Modal.Body>
-          <Modal.Footer>
+          {target.body && <Modal.Body className="modal_body">{target.body}</Modal.Body>}
+          <Modal.Footer className="modal_body">
             <Button variant="secondary" onClick={handleClose}>
               Закрити
             </Button>
