@@ -1,12 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useRef } from "react";
-import { Card } from "react-bootstrap";
+import { useRef, useState } from "react";
+import { Card, Modal, Button } from "react-bootstrap";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./KanbanConstants";
 import { updateIssuesSlice } from "../redux/issues/issuesSlice";
 import "./Issue.css";
 
 const DraggableIssue = ({ target }) => {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const ref = useRef(null);
   const dispatch = useDispatch();
   const issues = useSelector((state) => state.issues.issues);
@@ -107,19 +111,38 @@ const DraggableIssue = ({ target }) => {
   const issue = target.id === "placeholder" ? "issue_placeholder" : "issue_body";
 
   return (
-    <Card
-      ref={(node) => {
-        ref.current = node;
-        drag(drop(node));
-      }}
-      className={cardClassName}
-    >
-      <Card.Body className={issue}>
-        <Card.Title className="text_title">{target.title}</Card.Title>
-        <Card.Text className="text">{target.body}</Card.Text>
-      </Card.Body>
-      {/* <div className="issue-key">Key: {target.id}</div> */}
-    </Card>
+    <>
+      <Card
+        ref={(node) => {
+          ref.current = node;
+          drag(drop(node));
+        }}
+        className={cardClassName}
+        onClick={handleShow}
+      >
+        <Card.Body className={issue}>
+          <Card.Title className="text_title">{target.title}</Card.Title>
+          <Card.Text className="text">{target.body}</Card.Text>
+        </Card.Body>
+        {/* <div className="issue-key">Key: {target.id}</div> */}
+      </Card>
+      {show && (
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>{target.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{target.body}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Закрити
+            </Button>
+            <Button variant="primary" onClick={handleClose}>
+              Зберегти
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+    </>
   );
 };
 export default DraggableIssue;
