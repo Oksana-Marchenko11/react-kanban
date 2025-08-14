@@ -25,5 +25,6 @@
   padding-left: 160px;
   padding-bottom: 8px;
   padding-top: 8px;
+  border-radius: 6px;
   background-image: linear-gradient(to bottom right, rgb(58, 138, 219), rgb(195, 219, 243));
 }
